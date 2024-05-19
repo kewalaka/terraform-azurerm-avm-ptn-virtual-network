@@ -124,9 +124,6 @@ locals {
 }
 
 # This is the module call
-# Do not specify location here due to the randomization above.
-# Leaving location as `null` will cause the module to use the resource group location
-# with a data source.
 module "test" {
   source = "../../"
   # source                      = "Azure/avm-ptn-subnets/azurerm"
