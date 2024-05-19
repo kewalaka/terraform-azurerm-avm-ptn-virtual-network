@@ -1,29 +1,49 @@
-# TODO: Replace this dummy resource azurerm_resource_group.TODO with your module resource
-resource "azurerm_resource_group" "TODO" {
-  location = var.location
-  name     = var.name # calling code must supply the name
-  tags     = var.tags
+module "subnets" {
+  for_each = var.subnets
+
+  # TODO revert to Azure org pending fix: https://github.com/Azure/terraform-azurerm-avm-res-network-virtualnetwork/pull/74
+  source = "git::https://github.com/kewalaka/terraform-azurerm-avm-res-network-virtualnetwork?ref=dev"
+  # source  = "Azure/avm-res-network-virtualnetwork/azurerm"
+  # version = "0.2.0"
+
+  existing_vnet = {
+    resource_id = var.virtual_network_resource_id
+  }
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnets             = local.subnets
+
+  depends_on = [module.network_security_groups]
 }
 
-# required AVM resources interfaces
-resource "azurerm_management_lock" "this" {
-  count = var.lock != null ? 1 : 0
 
-  lock_level = var.lock.kind
-  name       = coalesce(var.lock.name, "lock-${var.lock.kind}")
-  scope      = azurerm_MY_RESOURCE.this.id # TODO: Replace with your azurerm resource name
-  notes      = var.lock.kind == "CanNotDelete" ? "Cannot delete the resource or its child resources." : "Cannot delete or modify the resource or its child resources."
+module "network_security_groups" {
+  for_each = var.network_security_groups
+
+  source              = "Azure/avm-res-network-networksecuritygroup/azurerm"
+  version             = "0.2.0"
+  resource_group_name = var.resource_group_name
+  name                = each.value.name
+  security_rules      = try(each.value.security_rules, {})
+  location            = var.location
 }
 
-resource "azurerm_role_assignment" "this" {
-  for_each = var.role_assignments
+# replace with an AVM when available
+resource "azurerm_route_table" "this" {
+  for_each = var.route_tables
 
-  principal_id                           = each.value.principal_id
-  scope                                  = azurerm_resource_group.TODO.id # TODO: Replace this dummy resource azurerm_resource_group.TODO with your module resource
-  condition                              = each.value.condition
-  condition_version                      = each.value.condition_version
-  delegated_managed_identity_resource_id = each.value.delegated_managed_identity_resource_id
-  role_definition_id                     = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? each.value.role_definition_id_or_name : null
-  role_definition_name                   = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? null : each.value.role_definition_id_or_name
-  skip_service_principal_aad_check       = each.value.skip_service_principal_aad_check
+  name                = each.value.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = each.value.tags
+
+  dynamic "route" {
+    for_each = try(each.value.routes, {})
+    content {
+      name                   = route.value.name
+      address_prefix         = route.value.address_prefix
+      next_hop_type          = route.value.next_hop_type
+      next_hop_in_ip_address = route.value.next_hop_in_ip_address
+    }
+  }
 }
