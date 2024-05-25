@@ -13,6 +13,5 @@ locals {
         }, sv.route_table, {})
       }
     )
-    if !(sv == "network_security_group_key" || sv == "route_table_key")
   }
 }
