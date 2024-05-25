@@ -65,6 +65,34 @@ resource "azurerm_route" "this" {
 }
 
 locals {
+  network_security_groups = {
+    nsg0 = {
+      name = module.naming.network_security_group.name_unique
+      security_rules = {
+        "http_inbound" = {
+          "access"                     = "Allow"
+          "name"                       = "httpInbound"
+          "direction"                  = "Inbound"
+          "priority"                   = 150
+          "protocol"                   = "Tcp"
+          "source_address_prefix"      = "*"
+          "source_port_range"          = "*"
+          "destination_address_prefix" = "*"
+          "destination_port_ranges"    = [80, 443]
+        }
+      }
+    }
+  }
+  route_tables = {
+    rt0 = {
+      name = "${module.naming.route_table.name_unique}-created"
+      routes = {
+        address_prefix = "1.2.3.4/24"
+        name           = "${module.naming.route.name_unique}-created"
+        next_hop_type  = "Internet"
+      }
+    }
+  }
   subnets = {
     snet0 = {
       name                       = "${module.naming.subnet.name_unique}0"
@@ -89,36 +117,6 @@ locals {
           name = "Microsoft.Web/serverFarms"
         }
       }]
-    }
-  }
-
-  network_security_groups = {
-    nsg0 = {
-      name = module.naming.network_security_group.name_unique
-      security_rules = {
-        "http_inbound" = {
-          "access"                     = "Allow"
-          "name"                       = "httpInbound"
-          "direction"                  = "Inbound"
-          "priority"                   = 150
-          "protocol"                   = "Tcp"
-          "source_address_prefix"      = "*"
-          "source_port_range"          = "*"
-          "destination_address_prefix" = "*"
-          "destination_port_ranges"    = [80, 443]
-        }
-      }
-    }
-  }
-
-  route_tables = {
-    rt0 = {
-      name = "${module.naming.route_table.name_unique}-created"
-      routes = {
-        address_prefix = "1.2.3.4/24"
-        name           = "${module.naming.route.name_unique}-created"
-        next_hop_type  = "Internet"
-      }
     }
   }
 }

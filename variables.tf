@@ -10,6 +10,11 @@ variable "resource_group_name" {
   description = "The resource group where the resources will be deployed."
 }
 
+variable "virtual_network_resource_id" {
+  type        = string
+  description = "The virtual network resource ID where the subnets, and optional NSGs and route tables, will be created."
+}
+
 # required AVM interfaces
 # remove only if not supported by the resource
 # tflint-ignore: terraform_unused_declarations
@@ -73,9 +78,4 @@ variable "tags" {
   type        = map(string)
   default     = null
   description = "(Optional) Tags of the resource."
-}
-
-variable "virtual_network_resource_id" {
-  description = "The virtual network resource ID where the subnets, and optional NSGs and route tables, will be created."
-  type        = string
 }
