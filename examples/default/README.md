@@ -71,6 +71,34 @@ resource "azurerm_route" "this" {
 }
 
 locals {
+  network_security_groups = {
+    nsg0 = {
+      name = module.naming.network_security_group.name_unique
+      security_rules = {
+        "http_inbound" = {
+          "access"                     = "Allow"
+          "name"                       = "httpInbound"
+          "direction"                  = "Inbound"
+          "priority"                   = 150
+          "protocol"                   = "Tcp"
+          "source_address_prefix"      = "*"
+          "source_port_range"          = "*"
+          "destination_address_prefix" = "*"
+          "destination_port_ranges"    = [80, 443]
+        }
+      }
+    }
+  }
+  route_tables = {
+    rt0 = {
+      name = "${module.naming.route_table.name_unique}-created"
+      routes = {
+        address_prefix = "1.2.3.4/24"
+        name           = "${module.naming.route.name_unique}-created"
+        next_hop_type  = "Internet"
+      }
+    }
+  }
   subnets = {
     snet0 = {
       name                       = "${module.naming.subnet.name_unique}0"
@@ -97,42 +125,9 @@ locals {
       }]
     }
   }
-
-  network_security_groups = {
-    nsg0 = {
-      name = module.naming.network_security_group.name_unique
-      security_rules = {
-        "http_inbound" = {
-          "access"                     = "Allow"
-          "name"                       = "httpInbound"
-          "direction"                  = "Inbound"
-          "priority"                   = 150
-          "protocol"                   = "Tcp"
-          "source_address_prefix"      = "*"
-          "source_port_range"          = "*"
-          "destination_address_prefix" = "*"
-          "destination_port_ranges"    = [80, 443]
-        }
-      }
-    }
-  }
-
-  route_tables = {
-    rt0 = {
-      name = "${module.naming.route_table.name_unique}-created"
-      routes = {
-        address_prefix = "1.2.3.4/24"
-        name           = "${module.naming.route.name_unique}-created"
-        next_hop_type  = "Internet"
-      }
-    }
-  }
 }
 
 # This is the module call
-# Do not specify location here due to the randomization above.
-# Leaving location as `null` will cause the module to use the resource group location
-# with a data source.
 module "test" {
   source = "../../"
   # source                      = "Azure/avm-ptn-subnets/azurerm"
@@ -184,17 +179,7 @@ No required inputs.
 
 ## Optional Inputs
 
-The following input variables are optional (have default values):
-
-### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
-
-Description: This variable controls whether or not telemetry is enabled for the module.  
-For more information see <https://aka.ms/avm/telemetryinfo>.  
-If it is set to false, then no telemetry will be collected.
-
-Type: `bool`
-
-Default: `true`
+No optional inputs.
 
 ## Outputs
 
