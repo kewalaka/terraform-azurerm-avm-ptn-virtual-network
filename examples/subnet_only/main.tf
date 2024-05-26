@@ -66,7 +66,7 @@ resource "azurerm_route" "this" {
 
 resource "azurerm_network_security_group" "this" {
   location            = azurerm_resource_group.this.location
-  name                = "acceptanceTestSecurityGroup1"
+  name                = module.naming.network_security_group.name_unique
   resource_group_name = azurerm_resource_group.this.name
   tags = {
     environment = "Demo"
