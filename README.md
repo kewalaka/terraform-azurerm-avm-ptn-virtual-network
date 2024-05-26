@@ -317,11 +317,15 @@ The following outputs are exported:
 
 ### <a name="output_network_security_groups"></a> [network\_security\_groups](#output\_network\_security\_groups)
 
-Description: This is the full output for the resource.
+Description: A map of all network security groups created.
+
+### <a name="output_route_tables"></a> [route\_tables](#output\_route\_tables)
+
+Description: A map of all route tables created.
 
 ### <a name="output_subnets"></a> [subnets](#output\_subnets)
 
-Description: This is the full output for the resource.
+Description: A map of all subnets created.
 
 ## Modules
 
