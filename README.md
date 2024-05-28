@@ -339,9 +339,9 @@ Version: 0.2.0
 
 ### <a name="module_subnets"></a> [subnets](#module\_subnets)
 
-Source: git::https://github.com/kewalaka/terraform-azurerm-avm-res-network-virtualnetwork//modules/subnet
+Source: Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet
 
-Version: feat/use-azapi-for-subnets
+Version: 0.2.1
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

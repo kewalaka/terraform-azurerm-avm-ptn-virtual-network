@@ -1,10 +1,8 @@
 module "subnets" {
   for_each = local.subnets
 
-  # TODO revert to Azure org pending fix: https://github.com/Azure/terraform-azurerm-avm-res-network-virtualnetwork/pull/74
-  source = "git::https://github.com/kewalaka/terraform-azurerm-avm-res-network-virtualnetwork//modules/subnet?ref=feat/use-azapi-for-subnets"
-  # source  = "Azure/avm-res-network-virtualnetwork/modules/subnet/azurerm"
-  # version = "0.2.0"
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
+  version = "0.2.1"
 
   virtual_network = {
     resource_id = var.virtual_network_resource_id
