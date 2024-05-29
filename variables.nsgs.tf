@@ -2,23 +2,23 @@ variable "network_security_groups" {
   type = map(object({
     name = string
     tags = optional(map(string))
-    security_rule = optional(map(object({
+    security_rules = optional(map(object({
       access                                     = string
-      description                                = string
-      destination_address_prefix                 = string
-      destination_address_prefixes               = set(string)
-      destination_application_security_group_ids = set(string)
-      destination_port_range                     = string
-      destination_port_ranges                    = set(string)
+      description                                = optional(string)
+      destination_address_prefix                 = optional(string)
+      destination_address_prefixes               = optional(set(string))
+      destination_application_security_group_ids = optional(set(string))
+      destination_port_range                     = optional(string)
+      destination_port_ranges                    = optional(set(string))
       direction                                  = string
       name                                       = string
       priority                                   = number
       protocol                                   = string
-      source_address_prefix                      = string
-      source_address_prefixes                    = set(string)
-      source_application_security_group_ids      = set(string)
-      source_port_range                          = string
-      source_port_ranges                         = set(string)
+      source_address_prefix                      = optional(string)
+      source_address_prefixes                    = optional(set(string))
+      source_application_security_group_ids      = optional(set(string))
+      source_port_range                          = optional(string)
+      source_port_ranges                         = optional(set(string))
     })))
     timeouts = optional(object({
       create = optional(string)
@@ -28,7 +28,6 @@ variable "network_security_groups" {
     }))
   }))
   description = <<-DESCRIPTION
- - `location` - (Required) Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.
  - `name` - (Required) Specifies the name of the network security group. Changing this forces a new resource to be created.
  - `resource_group_name` - (Required) The name of the resource group in which to create the network security group. Changing this forces a new resource to be created.
  - `tags` - (Optional) A mapping of tags to assign to the resource.
