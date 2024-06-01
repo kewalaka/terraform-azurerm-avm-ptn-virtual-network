@@ -163,4 +163,7 @@ module "this" {
   network_security_groups = local.network_security_groups
   subnets                 = local.subnets
 
+  depends_on = [
+    azurerm_route.default_route
+  ]
 }
