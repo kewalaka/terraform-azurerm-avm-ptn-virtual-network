@@ -64,7 +64,7 @@ resource "azurerm_route_table" "this" {
 }
 
 resource "azurerm_route" "this" {
-  address_prefix      = "10.0.0.0/16"
+  address_prefix      = "10.3.0.0/16"
   name                = module.naming.route.name_unique
   next_hop_type       = "VnetLocal"
   resource_group_name = azurerm_resource_group.this.name
@@ -92,20 +92,7 @@ resource "azurerm_network_security_group" "this" {
   }
 }
 
-
 locals {
-  route_tables = {
-    rt0 = {
-      name = "${module.naming.route_table.name_unique}-created"
-      routes = {
-        r0 = {
-          address_prefix = "1.2.3.4/24"
-          name           = "${module.naming.route.name_unique}-created"
-          next_hop_type  = "Internet"
-        }
-      }
-    }
-  }
   subnets_vnet0 = {
     snet0 = {
       name             = "${module.naming.subnet.name_unique}0"
@@ -114,7 +101,7 @@ locals {
         id = azurerm_network_security_group.this.id
       }
       route_table = {
-        key = "rt0"
+        id = azurerm_route_table.this.id
       }
     },
   }
@@ -126,7 +113,7 @@ locals {
         id = azurerm_network_security_group.this.id
       }
       route_table = {
-        key = "rt0"
+        id = azurerm_route_table.this.id
       }
     },
   }
@@ -141,8 +128,7 @@ module "vnet0" {
   resource_group_name         = azurerm_resource_group.this.name
   virtual_network_resource_id = azurerm_virtual_network.vnet0.id
 
-  route_tables = local.route_tables
-  subnets      = local.subnets_vnet0
+  subnets = local.subnets_vnet0
 
 }
 

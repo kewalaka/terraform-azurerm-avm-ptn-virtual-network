@@ -106,10 +106,10 @@ locals {
     snet1 = {
       name             = "${module.naming.subnet.name_unique}1"
       address_prefixes = ["10.0.1.0/24"]
-      network_security_groups = {
+      network_security_group = {
         key = "nsg0"
       }
-      route_tables = {
+      route_table = {
         key = "rt0"
       }
     },
