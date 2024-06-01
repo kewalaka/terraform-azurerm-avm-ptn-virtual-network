@@ -21,7 +21,10 @@ module "subnets" {
   service_endpoint_policies                     = try(each.value.service_endpoint_policies, null)
   service_endpoints                             = try(each.value.service_endpoints, null)
 
-  depends_on = [module.network_security_groups]
+  depends_on = [
+    module.network_security_groups,
+    azurerm_route_table.this
+  ]
 }
 
 
