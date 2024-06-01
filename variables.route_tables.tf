@@ -4,7 +4,7 @@ variable "route_tables" {
     disable_bgp_route_propagation = optional(bool)
     name                          = string
     tags                          = optional(map(string))
-    route = optional(set(object({
+    route = optional(map(object({
       address_prefix         = string
       name                   = string
       next_hop_in_ip_address = string

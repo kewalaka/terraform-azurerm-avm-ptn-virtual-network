@@ -126,25 +126,31 @@ locals {
   }
   subnets = {
     snet0 = {
-      name                       = "${module.naming.subnet.name_unique}0"
-      address_prefixes           = ["10.0.0.0/24"]
-      network_security_group_key = "nsg0"
+      name             = "${module.naming.subnet.name_unique}0"
+      address_prefixes = ["10.0.0.0/24"]
+      network_security_group = {
+        key = "nsg0"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }
     },
     snet1 = {
-      name                       = "${module.naming.subnet.name_unique}1"
-      address_prefixes           = ["10.0.1.0/24"]
-      network_security_group_key = "nsg0"
+      name             = "${module.naming.subnet.name_unique}1"
+      address_prefixes = ["10.0.1.0/24"]
+      network_security_group = {
+        key = "nsg0"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }
     },
     snet2 = {
-      name                       = "${module.naming.subnet.name_unique}2"
-      address_prefixes           = ["10.0.2.0/24"]
-      network_security_group_key = "nsg1"
+      name             = "${module.naming.subnet.name_unique}2"
+      address_prefixes = ["10.0.2.0/24"]
+      network_security_group = {
+        key = "nsg1"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }

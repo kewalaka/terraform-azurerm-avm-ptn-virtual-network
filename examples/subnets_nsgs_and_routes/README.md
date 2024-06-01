@@ -132,9 +132,11 @@ locals {
     rt0 = {
       name = "${module.naming.route_table.name_unique}-created"
       routes = {
-        address_prefix = "1.2.3.4/24"
-        name           = "${module.naming.route.name_unique}-created"
-        next_hop_type  = "Internet"
+        r0 = {
+          address_prefix = "1.2.3.4/24"
+          name           = "${module.naming.route.name_unique}-created"
+          next_hop_type  = "Internet"
+        }
       }
     }
   }
@@ -147,10 +149,14 @@ locals {
       }
     },
     snet1 = {
-      name                       = "${module.naming.subnet.name_unique}1"
-      address_prefixes           = ["10.0.1.0/24"]
-      network_security_group_key = "nsg0"
-      route_table_key            = "rt0"
+      name             = "${module.naming.subnet.name_unique}1"
+      address_prefixes = ["10.0.1.0/24"]
+      network_security_groups = {
+        key = "nsg0"
+      }
+      route_tables = {
+        key = "rt0"
+      }
     },
     snet2 = {
       name             = "${module.naming.subnet.name_unique}2"
