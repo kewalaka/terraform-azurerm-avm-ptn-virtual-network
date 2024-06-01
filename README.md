@@ -338,9 +338,9 @@ Version: 0.2.0
 
 ### <a name="module_subnets"></a> [subnets](#module\_subnets)
 
-Source: Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet
+Source: git::https://github.com/kewalaka/terraform-azurerm-avm-res-network-virtualnetwork//modules/subnet
 
-Version: 0.2.3
+Version: feat/try-more-locks
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

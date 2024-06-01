@@ -1,8 +1,9 @@
 module "subnets" {
   for_each = local.subnets
 
-  source  = "Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
-  version = "0.2.3"
+  source = "git::https://github.com/kewalaka/terraform-azurerm-avm-res-network-virtualnetwork//modules/subnet?ref=feat/try-more-locks"
+  # source  = "Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
+  # version = "0.2.3"
 
   virtual_network = {
     resource_id = var.virtual_network_resource_id
