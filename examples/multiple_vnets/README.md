@@ -149,9 +149,9 @@ locals {
       }
     }
   }
-  subnets = {
-    vnet0_snet0 = {
-      name             = "${module.naming.subnet.name_unique}1"
+  subnets_vnet0 = {
+    snet0 = {
+      name             = "${module.naming.subnet.name_unique}0"
       address_prefixes = ["10.0.1.0/24"]
       network_security_group = {
         id = azurerm_network_security_group.this.id
@@ -160,8 +160,10 @@ locals {
         key = "rt0"
       }
     },
-    vnet1_snet0 = {
-      name             = "${module.naming.subnet.name_unique}1"
+  }
+  subnets_vnet1 = {
+    snet0 = {
+      name             = "${module.naming.subnet.name_unique}0"
       address_prefixes = ["10.1.0.0/24"]
       network_security_group = {
         id = azurerm_network_security_group.this.id
@@ -183,7 +185,7 @@ module "vnet0" {
   virtual_network_resource_id = azurerm_virtual_network.vnet0.id
 
   route_tables = local.route_tables
-  subnets      = local.subnets
+  subnets      = local.subnets_vnet0
 
 }
 
@@ -195,7 +197,7 @@ module "vnet1" {
   resource_group_name         = azurerm_resource_group.this.name
   virtual_network_resource_id = azurerm_virtual_network.vnet1.id
 
-  subnets = local.subnets
+  subnets = local.subnets_vnet1
 
 }
 ```

@@ -340,7 +340,7 @@ Version: 0.2.0
 
 Source: Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet
 
-Version: 0.2.1
+Version: 0.2.3
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
