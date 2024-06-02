@@ -204,7 +204,7 @@ map(object({
     disable_bgp_route_propagation = optional(bool)
     name                          = string
     tags                          = optional(map(string))
-    route = optional(set(object({
+    route = optional(map(object({
       address_prefix         = string
       name                   = string
       next_hop_in_ip_address = string
@@ -274,15 +274,15 @@ map(object({
       id = string
     }))
     network_security_group = optional(object({
-      id = string
+      id  = optional(string)
+      key = optional(string)
     }))
-    network_security_group_key                    = optional(string)
     private_endpoint_network_policies             = optional(string, "Enabled")
     private_link_service_network_policies_enabled = optional(bool, true)
     route_table = optional(object({
-      id = string
+      id  = optional(string)
+      key = optional(string)
     }))
-    route_table_key             = optional(string)
     service_endpoint_policy_ids = optional(set(string))
     service_endpoints           = optional(set(string))
     delegation = optional(list(object({
@@ -340,7 +340,7 @@ Version: 0.2.0
 
 Source: Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet
 
-Version: 0.2.1
+Version: 0.2.3
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

@@ -1,9 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # Default example
 
-This deploys the module illustrating how to use both existing NSG, routes, and ones created within the module.
-
-An existing route table can be passed like this:
+This deploys the module illustrating using NSGs with multiple vnets.
 
 ```terraform
 subnets = {
@@ -88,10 +86,17 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
-resource "azurerm_virtual_network" "this" {
+resource "azurerm_virtual_network" "vnet0" {
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.this.location
-  name                = module.naming.virtual_network.name_unique
+  name                = "${module.naming.virtual_network.name_unique}0"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+resource "azurerm_virtual_network" "vnet1" {
+  address_space       = ["10.1.0.0/16"]
+  location            = azurerm_resource_group.this.location
+  name                = "${module.naming.virtual_network.name_unique}1"
   resource_group_name = azurerm_resource_group.this.name
 }
 
@@ -102,87 +107,83 @@ resource "azurerm_route_table" "this" {
 }
 
 resource "azurerm_route" "this" {
-  address_prefix      = "10.0.0.0/16"
+  address_prefix      = "10.3.0.0/16"
   name                = module.naming.route.name_unique
   next_hop_type       = "VnetLocal"
   resource_group_name = azurerm_resource_group.this.name
   route_table_name    = azurerm_route_table.this.name
 }
 
+resource "azurerm_network_security_group" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.network_security_group.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+  tags = {
+    environment = "Demo"
+  }
+
+  security_rule {
+    access                     = "Allow"
+    destination_address_prefix = "*"
+    destination_port_range     = "*"
+    direction                  = "Inbound"
+    name                       = "test123"
+    priority                   = 100
+    protocol                   = "Tcp"
+    source_address_prefix      = "*"
+    source_port_range          = "*"
+  }
+}
+
 locals {
-  network_security_groups = {
-    nsg0 = {
-      name = module.naming.network_security_group.name_unique
-      security_rules = {
-        "http_inbound" = {
-          "access"                     = "Allow"
-          "name"                       = "httpInbound"
-          "direction"                  = "Inbound"
-          "priority"                   = 150
-          "protocol"                   = "Tcp"
-          "source_address_prefix"      = "*"
-          "source_port_range"          = "*"
-          "destination_address_prefix" = "*"
-          "destination_port_ranges"    = [80, 443]
-        }
-      }
-    }
-  }
-  route_tables = {
-    rt0 = {
-      name = "${module.naming.route_table.name_unique}-created"
-      routes = {
-        r0 = {
-          address_prefix = "1.2.3.4/24"
-          name           = "${module.naming.route.name_unique}-created"
-          next_hop_type  = "Internet"
-        }
-      }
-    }
-  }
-  subnets = {
+  subnets_vnet0 = {
     snet0 = {
       name             = "${module.naming.subnet.name_unique}0"
-      address_prefixes = ["10.0.0.0/24"]
+      address_prefixes = ["10.0.1.0/24"]
+      network_security_group = {
+        id = azurerm_network_security_group.this.id
+      }
       route_table = {
         id = azurerm_route_table.this.id
       }
     },
-    snet1 = {
-      name             = "${module.naming.subnet.name_unique}1"
-      address_prefixes = ["10.0.1.0/24"]
+  }
+  subnets_vnet1 = {
+    snet0 = {
+      name             = "${module.naming.subnet.name_unique}0"
+      address_prefixes = ["10.1.0.0/24"]
       network_security_group = {
-        key = "nsg0"
+        id = azurerm_network_security_group.this.id
       }
       route_table = {
-        key = "rt0"
+        id = azurerm_route_table.this.id
       }
     },
-    snet2 = {
-      name             = "${module.naming.subnet.name_unique}2"
-      address_prefixes = ["10.0.2.0/24"]
-      delegation = [{
-        name = "Microsoft.Web.serverFarms"
-        service_delegation = {
-          name = "Microsoft.Web/serverFarms"
-        }
-      }]
-    }
   }
 }
 
 # This is the module call
-module "test" {
+module "vnet0" {
   source = "../../"
   # source                      = "Azure/avm-ptn-subnets/azurerm"
   # version                     = "..."
   location                    = azurerm_resource_group.this.location
   resource_group_name         = azurerm_resource_group.this.name
-  virtual_network_resource_id = azurerm_virtual_network.this.id
+  virtual_network_resource_id = azurerm_virtual_network.vnet0.id
 
-  network_security_groups = local.network_security_groups
-  route_tables            = local.route_tables
-  subnets                 = local.subnets
+  subnets = local.subnets_vnet0
+
+}
+
+module "vnet1" {
+  source = "../../"
+  # source                      = "Azure/avm-ptn-subnets/azurerm"
+  # version                     = "..."
+  location                    = azurerm_resource_group.this.location
+  resource_group_name         = azurerm_resource_group.this.name
+  virtual_network_resource_id = azurerm_virtual_network.vnet1.id
+
+  subnets = local.subnets_vnet1
 
 }
 ```
@@ -210,10 +211,12 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
+- [azurerm_network_security_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_route.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) (resource)
 - [azurerm_route_table.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) (resource)
-- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
+- [azurerm_virtual_network.vnet0](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
+- [azurerm_virtual_network.vnet1](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
@@ -245,7 +248,13 @@ Source: Azure/regions/azurerm
 
 Version: ~> 0.3
 
-### <a name="module_test"></a> [test](#module\_test)
+### <a name="module_vnet0"></a> [vnet0](#module\_vnet0)
+
+Source: ../../
+
+Version:
+
+### <a name="module_vnet1"></a> [vnet1](#module\_vnet1)
 
 Source: ../../
 

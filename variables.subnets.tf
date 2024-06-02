@@ -6,15 +6,15 @@ variable "subnets" {
       id = string
     }))
     network_security_group = optional(object({
-      id = string
+      id  = optional(string)
+      key = optional(string)
     }))
-    network_security_group_key                    = optional(string)
     private_endpoint_network_policies             = optional(string, "Enabled")
     private_link_service_network_policies_enabled = optional(bool, true)
     route_table = optional(object({
-      id = string
+      id  = optional(string)
+      key = optional(string)
     }))
-    route_table_key             = optional(string)
     service_endpoint_policy_ids = optional(set(string))
     service_endpoints           = optional(set(string))
     delegation = optional(list(object({

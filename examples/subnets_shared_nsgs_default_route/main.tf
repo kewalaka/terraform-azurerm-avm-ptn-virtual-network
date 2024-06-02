@@ -50,13 +50,6 @@ resource "azurerm_virtual_network" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-resource "azurerm_virtual_network" "second_net" {
-  address_space       = ["10.1.0.0/16"]
-  location            = azurerm_resource_group.this.location
-  name                = module.naming.virtual_network.name_unique
-  resource_group_name = azurerm_resource_group.this.name
-}
-
 resource "azurerm_route_table" "default_route" {
   location            = azurerm_resource_group.this.location
   name                = module.naming.route_table.name_unique
@@ -120,25 +113,31 @@ locals {
   }
   subnets = {
     snet0 = {
-      name                       = "${module.naming.subnet.name_unique}0"
-      address_prefixes           = ["10.0.0.0/24"]
-      network_security_group_key = "nsg0"
+      name             = "${module.naming.subnet.name_unique}0"
+      address_prefixes = ["10.0.0.0/24"]
+      network_security_group = {
+        key = "nsg0"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }
     },
     snet1 = {
-      name                       = "${module.naming.subnet.name_unique}1"
-      address_prefixes           = ["10.0.1.0/24"]
-      network_security_group_key = "nsg0"
+      name             = "${module.naming.subnet.name_unique}1"
+      address_prefixes = ["10.0.1.0/24"]
+      network_security_group = {
+        key = "nsg0"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }
     },
     snet2 = {
-      name                       = "${module.naming.subnet.name_unique}2"
-      address_prefixes           = ["10.0.2.0/24"]
-      network_security_group_key = "nsg1"
+      name             = "${module.naming.subnet.name_unique}2"
+      address_prefixes = ["10.0.2.0/24"]
+      network_security_group = {
+        key = "nsg1"
+      }
       route_table = {
         id = azurerm_route_table.default_route.id
       }
@@ -157,4 +156,7 @@ module "this" {
   network_security_groups = local.network_security_groups
   subnets                 = local.subnets
 
+  depends_on = [
+    azurerm_route.default_route
+  ]
 }
