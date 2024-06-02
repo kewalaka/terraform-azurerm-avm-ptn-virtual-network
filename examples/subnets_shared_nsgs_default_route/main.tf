@@ -50,13 +50,6 @@ resource "azurerm_virtual_network" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-resource "azurerm_virtual_network" "second_net" {
-  address_space       = ["10.1.0.0/16"]
-  location            = azurerm_resource_group.this.location
-  name                = module.naming.virtual_network.name_unique
-  resource_group_name = azurerm_resource_group.this.name
-}
-
 resource "azurerm_route_table" "default_route" {
   location            = azurerm_resource_group.this.location
   name                = module.naming.route_table.name_unique
