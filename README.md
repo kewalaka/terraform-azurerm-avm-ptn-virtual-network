@@ -42,18 +42,6 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: Azure region where the resource should be deployed.
-
-Type: `string`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: The resource group where the resources will be deployed.
-
-Type: `string`
-
 ### <a name="input_virtual_network_resource_id"></a> [virtual\_network\_resource\_id](#input\_virtual\_network\_resource\_id)
 
 Description: The virtual network resource ID where the subnets, and optional NSGs and route tables, will be created.
@@ -107,6 +95,14 @@ If it is set to false, then no telemetry will be collected.
 Type: `bool`
 
 Default: `true`
+
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: Azure region where the resource should be deployed.  Required if supplying NSGs or route tables.
+
+Type: `string`
+
+Default: `null`
 
 ### <a name="input_network_security_groups"></a> [network\_security\_groups](#input\_network\_security\_groups)
 
@@ -174,6 +170,14 @@ map(object({
 ```
 
 Default: `{}`
+
+### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
+
+Description: The resource group where the resources will be deployed.  Required if supplying NSGs or route tables.
+
+Type: `string`
+
+Default: `null`
 
 ### <a name="input_route_tables"></a> [route\_tables](#input\_route\_tables)
 
