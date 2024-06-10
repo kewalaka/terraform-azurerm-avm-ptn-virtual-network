@@ -1,16 +1,3 @@
-variable "location" {
-  type        = string
-  description = "Azure region where the resource should be deployed.  Required if supplying NSGs or route tables."
-  default     = null
-}
-
-# This is required for most resource modules
-variable "resource_group_name" {
-  type        = string
-  description = "The resource group where the resources will be deployed.  Required if supplying NSGs or route tables."
-  default     = null
-}
-
 variable "virtual_network_resource_id" {
   type        = string
   description = "The virtual network resource ID where the subnets, and optional NSGs and route tables, will be created."
@@ -72,6 +59,19 @@ This variable controls whether or not telemetry is enabled for the module.
 For more information see <https://aka.ms/avm/telemetryinfo>.
 If it is set to false, then no telemetry will be collected.
 DESCRIPTION
+}
+
+variable "location" {
+  type        = string
+  default     = null
+  description = "Azure region where the resource should be deployed.  Required if supplying NSGs or route tables."
+}
+
+# This is required for most resource modules
+variable "resource_group_name" {
+  type        = string
+  default     = null
+  description = "The resource group where the resources will be deployed.  Required if supplying NSGs or route tables."
 }
 
 # tflint-ignore: terraform_unused_declarations
