@@ -1,13 +1,14 @@
 variable "location" {
   type        = string
-  description = "Azure region where the resource should be deployed."
-  nullable    = false
+  description = "Azure region where the resource should be deployed.  Required if supplying NSGs or route tables."
+  default     = null
 }
 
 # This is required for most resource modules
 variable "resource_group_name" {
   type        = string
-  description = "The resource group where the resources will be deployed."
+  description = "The resource group where the resources will be deployed.  Required if supplying NSGs or route tables."
+  default     = null
 }
 
 variable "virtual_network_resource_id" {
