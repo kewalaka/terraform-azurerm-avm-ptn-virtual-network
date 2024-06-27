@@ -15,8 +15,9 @@ variable "subnets" {
       id  = optional(string)
       key = optional(string)
     }))
-    service_endpoint_policy_ids = optional(set(string))
-    service_endpoints           = optional(set(string))
+    service_endpoint_policy_ids     = optional(set(string))
+    service_endpoints               = optional(set(string))
+    default_outbound_access_enabled = optional(bool, false)
     delegation = optional(list(object({
       name = string
       service_delegation = object({
@@ -43,6 +44,7 @@ A map of subnets to create
  - `resource_group_name` - (Required) The name of the resource group in which to create the subnet. This must be the resource group that the virtual network resides in. Changing this forces a new resource to be created.
  - `service_endpoint_policy_ids` - (Optional) The list of IDs of Service Endpoint Policies to associate with the subnet.
  - `service_endpoints` - (Optional) The list of Service endpoints to associate with the subnet. Possible values include: `Microsoft.AzureActiveDirectory`, `Microsoft.AzureCosmosDB`, `Microsoft.ContainerRegistry`, `Microsoft.EventHub`, `Microsoft.KeyVault`, `Microsoft.ServiceBus`, `Microsoft.Sql`, `Microsoft.Storage`, `Microsoft.Storage.Global` and `Microsoft.Web`.
+ - `default_outbound_access_enabled` - (Optional) Whether to allow default outbound access from the subnet. Defaults to `false`.
  - `virtual_network_name` - (Required) The name of the virtual network to which to attach the subnet. Changing this forces a new resource to be created.
 
  ---
