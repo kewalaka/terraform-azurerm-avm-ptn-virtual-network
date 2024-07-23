@@ -2,13 +2,14 @@ module "subnets" {
   for_each = local.subnets
 
   source  = "Azure/avm-res-network-virtualnetwork/azurerm//modules/subnet"
-  version = "0.2.3"
+  version = "0.3.0"
 
   virtual_network = {
     resource_id = var.virtual_network_resource_id
   }
   name             = each.value.name
   address_prefixes = each.value.address_prefixes
+  address_prefix   = each.value.address_prefix
 
   default_outbound_access_enabled               = try(each.value.default_outbound_access_enabled, false)
   delegation                                    = try(each.value.delegation, null)
