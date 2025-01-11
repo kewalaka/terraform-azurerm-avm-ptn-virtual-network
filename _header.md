@@ -1,4 +1,4 @@
-# terraform-azurerm-avm-ptn-subnets
+# terraform-azurerm-avm-ptn-subnets-nsgs-routes
 
 This is a Terraform Azure Verified Pattern Module for creating subnets with network security group & route tables either created inline or passed in by resource ID.
 
